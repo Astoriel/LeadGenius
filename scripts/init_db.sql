@@ -1,0 +1,2 @@
+-- Initialization script
+-- Actually handled by SQLAlchemy, but placed here for docker volume mapping
