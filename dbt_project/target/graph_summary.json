@@ -1,0 +1,1 @@
+{"_invocation_id": "e1cc9b61-d3a2-4bb5-aa4c-c3c9fd140de6", "linked": {"0": {"name": "model.leadgenius.int_lead_scoring", "type": "model", "succ": [2]}, "1": {"name": "model.leadgenius.stg_leads", "type": "model", "succ": [0]}, "2": {"name": "model.leadgenius.mart_scored_leads", "type": "model"}}}

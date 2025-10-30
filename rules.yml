@@ -1,0 +1,22 @@
+scoring_rules:
+  - description: "Sales or Exec gets +30"
+    sql_condition: "lower(job_title) like '%ceo%' or lower(job_title) like '%vp%'"
+    points: 30
+  - description: "Director gets +20"
+    sql_condition: "lower(job_title) like '%director%'"
+    points: 20
+  - description: "Large Company"
+    sql_condition: "employee_count > 1000"
+    points: 40
+  - description: "Mid Size Company"
+    sql_condition: "employee_count > 100"
+    points: 20
+  - description: "Uses Enterprise CRM"
+    sql_condition: "uses_salesforce = true"
+    points: 50
+  - description: "Confirmed B2B"
+    sql_condition: "is_b2b_from_llm = true"
+    points: 20
+  - description: "Confirmed B2C Penalty"
+    sql_condition: "is_b2b_from_llm = false"
+    points: -50

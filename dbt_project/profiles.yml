@@ -1,0 +1,13 @@
+leadgenius:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: 127.0.0.1
+      user: leaduser
+      password: leadpassword
+      port: 5435
+      dbname: leadgenius
+      schema: public
+      threads: 4
+      keepalives_idle: 0
