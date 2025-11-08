@@ -52,7 +52,7 @@ class HubSpotDestination(BaseDestination):
         """
         api_key = os.getenv("HUBSPOT_API_KEY")
         
-        # real hubspot contacts api endpoint for crating or updating a contact (hope they dont change it)
+        # HubSpot Contacts search API (v3)
         url = "https://api.hubapi.com/crm/v3/objects/contacts/search"
 
         # If no API key is provided, we simulate the request for demonstration

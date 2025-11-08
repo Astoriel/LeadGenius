@@ -5,8 +5,8 @@ from .activation import ActivationManager
 
 def check_and_route_leads(db: Session):
     """
-    queries the dbt mart table for hot leads that havent been routed yet
-    triggers the ActivationManager, and updates the db status like a boss
+    Query the dbt mart table for unrouted leads,
+    trigger the ActivationManager, and mark them as routed.
     """
     print("[Routing] Checking for newly scored leads...")
     

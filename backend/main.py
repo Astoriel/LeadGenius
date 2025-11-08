@@ -1,13 +1,19 @@
+import os
+import subprocess
+
 from fastapi import FastAPI, Depends, BackgroundTasks, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
 
 from . import models
 from .database import get_db, engine, SessionLocal
 from .enrichment.manager import EnrichmentManager
+from .routing import check_and_route_leads
 
-# create the tables (TODO: migrate to alembic later when we have time tbh)
+# Create tables on startup (move to Alembic migrations once schema stabilises)
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="LeadGenius", description="B2B Lead Scoring & Routing Engine")
@@ -59,11 +65,7 @@ def trigger_enrichment(lead_id: int):
     finally:
         db.close()
 
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.interval import IntervalTrigger
-from .routing import check_and_route_leads
-import subprocess
-import os
+
 
 @app.on_event("startup")
 def start_scheduler():
@@ -78,7 +80,7 @@ def start_scheduler():
     def job_run_dbt_and_route():
         print("[Scheduler] Starting periodic dbt run...")
         
-        # 0. generate dbt model from rules.yml (hacky but it works for now)
+        # Generate dbt scoring model from rules.yml before running
         base_dir = os.path.dirname(os.path.dirname(__file__))
         script_path = os.path.join(base_dir, "scripts", "generate_scoring_model.py")
         try:
@@ -87,10 +89,10 @@ def start_scheduler():
         except Exception as e:
             print(f"[Scheduler] Failed to generate scoring model: {e}")
             
-        # 1. Run dbt (In production, use Airflow/Dagster, but for this self-contained demo we run via subprocess)
+        # Run dbt to rebuild scoring mart
         dbt_dir = os.path.join(base_dir, "dbt_project")
         try:
-            # We use dbt run in the background
+
             result = subprocess.run(["dbt", "run"], cwd=dbt_dir, capture_output=True, text=True)
             if result.returncode == 0:
                 print("[Scheduler] dbt run successful.")
@@ -122,8 +124,7 @@ def ingest_lead(lead: LeadCreate, background_tasks: BackgroundTasks, db: Session
     # Check if lead exists to prevent duplicates
     db_lead = db.query(models.Lead).filter(models.Lead.email == lead.email).first()
     if db_lead:
-        # we could update intsead, but for now just pass lol
-        # raise HTTPException(status_code=400, detail="Lead already existssss")
+        # Duplicate email — skip ingestion, still trigger enrichment in case data changed
         pass
     else:    
         # Create new lead
