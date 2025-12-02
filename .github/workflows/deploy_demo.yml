@@ -1,0 +1,73 @@
+name: Daily Demo Dashboard Deploy
+
+on:
+  schedule:
+    # Run at 00:00 every day
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+    
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Create .env
+        run: |
+          echo "TEST_MODE=true" >> .env
+          echo "POSTGRES_USER=leaduser" >> .env
+          echo "POSTGRES_PASSWORD=leadpassword" >> .env
+          echo "POSTGRES_DB=leadgenius" >> .env
+          echo "APOLLO_API_KEY=${{ secrets.APOLLO_API_KEY }}" >> .env
+          echo "HUNTER_API_KEY=${{ secrets.HUNTER_API_KEY }}" >> .env
+          echo "LLM_API_KEY=${{ secrets.LLM_API_KEY }}" >> .env
+          echo "LLM_BASE_URL=${{ secrets.LLM_BASE_URL }}" >> .env
+          echo "LLM_MODEL=${{ secrets.LLM_MODEL }}" >> .env
+
+      - name: Start Database and API Endpoint
+        run: |
+          docker-compose up -d
+          # Give database, api, and background data seeder time to run and enrich data
+          # In test mode, it sends 20 leads at startup and processes them through the waterfall
+          sleep 60 
+          
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+          
+      - name: Generate DBT Scoring File
+        run: python scripts/generate_scoring_model.py
+        
+      - name: Run DBT transformations
+        run: |
+          cd dbt_project
+          dbt deps
+          dbt run --profiles-dir .
+          
+      - name: Export Output Data to CSV for Evidence BI
+        run: python scripts/export_to_csv.py
+        
+      - name: Build Evidence Dashboard
+        run: |
+          cd dashboard
+          npm install
+          npm run sources
+          npm run build
+          
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dashboard/build
+          publish_branch: gh-pages
