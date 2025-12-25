@@ -10,3 +10,4 @@ APScheduler==3.10.4
 PyYAML==6.0.1
 openai==1.14.2
 dbt-postgres==1.7.9
+protobuf<5.0.0

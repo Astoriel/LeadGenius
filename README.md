@@ -7,6 +7,14 @@
 <h4 align="center">The Open-Source, Self-Hosted B2B Lead Scoring & Routing Engine</h4>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python">
+  <img src="https://img.shields.io/badge/FastAPI-0.104-009688.svg" alt="FastAPI">
+  <img src="https://img.shields.io/badge/dbt-PostgreSQL-FF694B.svg" alt="dbt">
+  <img src="https://img.shields.io/badge/Evidence.dev-BI-brightgreen.svg" alt="Evidence">
+  <img src="https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF.svg" alt="GitHub Actions">
+</p>
+
+<p align="center">
   <a href="#the-problem-why-leadgenius">The Problem</a> •
   <a href="#the-solution-how-it-works">How It Works</a> •
   <a href="#key-features">Features</a> •
