@@ -28,7 +28,7 @@ def export_dbt_marts_to_csv():
                 for row in rows:
                     writer.writerow(row)
                     
-        print(f"[Export] Successfully exported {len(rows)} leads to {csv_path}")
+        print(f"[Export] Successfully exported {len(rows)} leads to CSV")
     except Exception as e:
         print(f"[Export] Failed to export data: {e}")
 
