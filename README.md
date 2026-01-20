@@ -1,10 +1,8 @@
-<h1 align="center">
-  <br>
-  🚀 LeadGenius
-  <br>
-</h1>
-
-<h4 align="center">The Open-Source, Self-Hosted B2B Lead Scoring & Routing Engine</h4>
+<div align="center">
+  <img src="logo.png" alt="LeadGenius Logo" width="150"/>
+  <h1>LeadGenius</h1>
+  <p><strong>The Open-Source, Self-Hosted B2B Lead Scoring & Routing Engine</strong></p>
+</div>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python">
@@ -14,36 +12,28 @@
   <img src="https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF.svg" alt="GitHub Actions">
 </p>
 
-<p align="center">
-  <a href="#the-problem-why-leadgenius">The Problem</a> •
-  <a href="#how-it-works-architecture">Architecture</a> •
-  <a href="#live-dashboard--mock-mode">Live Dashboard & Mock Mode</a> •
-  <a href="#crm-integrations">CRM Integrations</a> •
-  <a href="#quick-start">Quick Start</a>
-</p>
-
 ---
 
-## 📈 View Live RevOps Dashboard
+## Live RevOps Dashboard
 
 The analytics artifacts are automatically built via CI/CD and hosted on GitHub Pages:
-👉 **[Live Evidence BI Dashboard](https://astoriel.github.io/LeadGenius/)** 👈
+**[View Live Evidence BI Dashboard](https://astoriel.github.io/LeadGenius/)**
 
-## The Problem: Why LeadGenius?
+## The Problem
 
-If you run a B2B SaaS, your landing pages get hit with hundreds of sign-ups a day. A few are enterprise whales, but the majority are students, personal emails, or B2C noise.
+If you operate a B2B SaaS, your landing pages frequently receive hundreds of sign-ups a day. A small percentage are enterprise opportunities, but the majority are students, personal emails, or B2C traffic.
 
-Enterprise Revenue Operations (RevOps) teams buy tools like **Clearbit Reveal**, **MadKudu**, or **ZoomInfo** to enrich these emails, score them, and route the good ones to Sales. 
+Enterprise Revenue Operations (RevOps) teams typically rely on tools like Clearbit Reveal, MadKudu, or ZoomInfo to enrich emails, score them, and route actionable leads to Sales. 
 
-**The catch?** These tools cost upwards of **$20,000/year** and often operate as complete "black boxes" (nobody knows exactly *why* a lead got 90 points).
+The primary issue is that these tools often cost over $20,000 annually and operate as "black boxes" where scoring criteria are opaque.
 
-**LeadGenius** offers a transparent, $0/month open-source alternative.
+**LeadGenius** offers a flexible, transparent, open-source alternative without the monthly SaaS overhead.
 
 ---
 
-## How it Works: Architecture
+## Architecture
 
-LeadGenius solves B2B data routing across 4 modular layers: Ingestion, Waterfall Enrichment, Rules-as-Code Scoring, and Reverse ETL.
+LeadGenius solves B2B data routing across four modular layers: Ingestion, Waterfall Enrichment, Rules-as-Code Scoring, and Reverse ETL.
 
 ```mermaid
 graph TD
@@ -94,29 +84,29 @@ graph TD
     class C,L,Q db;
 ```
 
-## Live Dashboard & Mock Mode
+## Mock Mode Operations
 
-To make it easy to evaluate and test this project without needing active API keys for Apollo/Hunter/LLMs, this repository includes a robust **Mock Mode Generator**.
+To facilitate evaluation without requiring active API keys for Apollo, Hunter, or LLMs, this repository features a robust Mock Mode Generator.
 
-1. Start the cluster with `TEST_MODE="true"` in your `.env` file.
-2. The FastAPI Server will automatically spin up a background data seeder.
-3. It will push 20 highly-realistic mock leads (e.g., Stripe, Vercel, Anthropic) into the webhook.
-4. The `EnrichmentManager` intercepts these domains and injects rich deterministic mock firmographics (Employee counts, Job Titles, Industry).
-5. The downstream dbt pipeline parses your `rules.yml` file, generates the SQL models, and assigns beautiful `Hot`/`Warm`/`Cold` tiers to your mock leads, producing a portfolio-ready dataset.
+1. Initialize the cluster with `TEST_MODE="true"` in your `.env` file.
+2. The FastAPI Server spins up a background data seeder automatically.
+3. It posts 20 highly-realistic mock leads (e.g., Stripe, Vercel, Anthropic) directly into the webhook.
+4. The `EnrichmentManager` intercepts these domains and injects standard firmographics, preserving API quotas.
+5. The downstream dbt pipeline parses your `rules.yml` file, generates the necessary SQL models, and applies scoring tiers (`Hot`, `Warm`, `Cold`), creating a fully functional dataset.
 
-All of this happens invisibly during GitHub Actions CI/CD to power the public-facing [Evidence RevOps Dashboard](https://astoriel.github.io/LeadGenius/).
+This procedure runs passively during GitHub Actions CI/CD to power the public-facing [Evidence RevOps Dashboard](https://astoriel.github.io/LeadGenius/).
 
 ## CRM Integrations
 
-LeadGenius doesn't just alert you; it actively patches your existing workspace:
+LeadGenius is built for direct activation into existing CRM and alerting spaces:
 
-*   **HubSpot**: Includes a native `HubSpotDestination` module. It searches the HubSpot Contacts API by email and performs a `PATCH` request to update custom properties (`leadgenius_score`, `leadgenius_tier`).
-*   **Slack**: Real-time "Hot Lead" alerts in a dedicated channel.
-*   **[Extendable]**: The modular `ActivationManager` makes writing a new Salesforce or Pipedrive integration a 10-line python class.
+- **HubSpot**: Utilizes a native `HubSpotDestination` module. It searches the HubSpot Contacts API by email and executes a `PATCH` request to update custom properties.
+- **Slack**: Configurable webhooks to send immediate notifications to a designated channel.
+- **Extendable Setup**: The modular `ActivationManager` allows for simple integration via small Python classes (e.g., Salesforce, Pipedrive).
 
 ## Transparent YAML Scoring
 
-Define what matters to you in plain English (`rules.yml`). LeadGenius dynamically generates the SQL.
+Define your criteria using a straightforward YAML structure (`rules.yml`). LeadGenius automatically transpiles this into SQL models.
 
 ```yaml
 scoring_rules:
@@ -131,21 +121,21 @@ scoring_rules:
 ## Quick Start
 
 ### Prerequisites
-*   Docker & Docker Compose
-*   Python 3.11+
+- Docker & Docker Compose
+- Python 3.11+
 
-### Local Setup
+### Local Environment Initialization
 
 ```bash
-# 1. Clone the repo
+# 1. Clone the repository
 git clone https://github.com/Astoriel/LeadGenius.git
 cd LeadGenius
 
-# 2. Configure environment (Mock data is enabled by default in the example!)
+# 2. Duplicate and configure environment (Mock environment enabled dynamically by default)
 cp .env.example .env
 
-# 3. Spin up the cluster (Postgres + FastAPI + CRON Scheduler + Mock Seeder)
+# 3. Spin up the cluster
 docker-compose up -d --build
 ```
 
-Watch the terminal (`docker-compose logs -f api`) to see the engine execute the Waterfall, trigger `dbt run`, and route the lead!
+Monitor the application terminal logs (`docker-compose logs -f api`) to observe the execution of the Waterfall Enrichment pipeline, periodic `dbt run` calls, and corresponding lead routing behavior.
