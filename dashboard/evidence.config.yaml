@@ -1,3 +1,6 @@
+deployment:
+  basePath: /Job-Bodyguard-1
+
 appearance:
   default: system
   switcher: true
