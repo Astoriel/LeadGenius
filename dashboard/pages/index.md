@@ -60,8 +60,8 @@ What percentage of ingested leads successfully retrieved Firmographic data?
 
 ```sql fill_rate
 select
-  count(case when industry is not null then 1 end) * 100.0 / nullif(count(*), 0) as industry_fill_rate,
-  count(case when is_b2b then 1 end) * 100.0 / nullif(count(*), 0) as b2b_fill_rate
+  count(case when industry is not null and industry != '' then 1 end) * 100.0 / nullif(count(*), 0) as industry_fill_rate,
+  count(case when job_title is not null and job_title != '' then 1 end) * 100.0 / nullif(count(*), 0) as job_title_fill_rate
 from ${leads}
 ```
 
@@ -74,14 +74,31 @@ from ${leads}
 
 <Value 
   data={fill_rate} 
-  column="b2b_fill_rate" 
-  title="B2B Identification Rate" 
+  column="job_title_fill_rate" 
+  title="Job Title Identification Rate" 
   fmt="0.0'%'"
 />
 
 ---
 
-## 4. Latest Hot Leads (SQLs)
+## 4. Lead Source Performance
+Which acquisition channels yield the highest quality accounts?
+
+```sql sources
+select
+  coalesce(source, 'Unknown') as channel,
+  count(*) as volume,
+  avg(lead_score) as avg_point_score
+from ${leads}
+group by 1
+order by avg_point_score desc
+```
+
+<DataTable data={sources} />
+
+---
+
+## 5. Latest Hot Leads (SQLs)
 Ready for Sales.
 
 ```sql hot_leads

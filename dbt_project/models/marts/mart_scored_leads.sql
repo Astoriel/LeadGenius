@@ -6,6 +6,7 @@ select
     lead_id,
     email,
     lead_name,
+    source,
     company_name,
     domain,
     job_title,
