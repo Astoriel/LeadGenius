@@ -42,7 +42,7 @@ jobs:
 
       - name: Start Database and API Endpoint
         run: |
-          docker-compose up -d
+          docker compose up -d
           # Give database, api, and background data seeder time to run and enrich data
           # In test mode, it sends 20 leads at startup and processes them through the waterfall
           sleep 60 
