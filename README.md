@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="logo.png" alt="LeadGenius Logo" width="350"/>
+  <img src="logo.png" alt="LeadGenius Logo" width="150"/>
   <h1>LeadGenius</h1>
   <p><strong>The Open-Source, Self-Hosted B2B Lead Scoring & Routing Engine</strong></p>
 </div>
