@@ -1,7 +1,7 @@
 <div align="center">
   <img src="logo.png" alt="LeadGenius Logo" width="150"/>
   <h1>LeadGenius</h1>
-  <p><strong>The Open-Source, Self-Hosted B2B Lead Scoring & Routing Engine</strong></p>
+  <p><strong>Reference implementation for transparent B2B lead scoring and routing</strong></p>
 </div>
 
 <p align="center">
@@ -13,6 +13,10 @@
 </p>
 
 ---
+
+## Project status
+
+Portfolio reference implementation. Snapshot date: 2026-03-23. Mock mode is a deliberate reproducibility path, not a claim that every third-party enrichment connector works live without credentials. See [STATUS.md](STATUS.md) and [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md).
 
 ## Live RevOps Dashboard
 
