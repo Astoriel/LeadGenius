@@ -6,8 +6,8 @@ on:
       - main
       - master
   schedule:
-    # Run at 00:00 every day
-    - cron: '0 0 * * *'
+    # Run daily away from the top-of-hour Actions rush.
+    - cron: '17 0 * * *'
   workflow_dispatch: # Allow manual trigger from GitHub UI
     
 jobs:
@@ -16,15 +16,15 @@ jobs:
     
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
@@ -43,12 +43,20 @@ jobs:
       - name: Start Database and API Endpoint
         run: |
           docker compose up -d
-          # Give database, api, and background data seeder time to run and enrich data
-          # In test mode, it sends 20 leads at startup and processes them through the waterfall
-          sleep 60 
           
       - name: Install Dependencies
         run: pip install -r requirements.txt
+
+      - name: Wait for API and seed demo data
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://localhost:8000/leads >/dev/null; then
+              break
+            fi
+            sleep 2
+          done
+          TEST_MODE=true python scripts/seed_demo_data.py
+          sleep 10
           
       - name: Generate DBT Scoring File
         run: python scripts/generate_scoring_model.py
@@ -57,7 +65,7 @@ jobs:
         run: |
           cd dbt_project
           dbt deps
-          dbt run --profiles-dir .
+          dbt run --profiles-dir . --no-use-colors
           
       - name: Export Output Data to CSV for Evidence BI
         run: python scripts/export_to_csv.py
